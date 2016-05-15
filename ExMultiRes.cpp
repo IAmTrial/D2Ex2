@@ -366,13 +366,18 @@ namespace ExMultiRes
 			break;
 			default:
 			{
-				if (lResModes.at(nMode - 3).nWidth == 0 || lResModes.at(nMode - 3).nHeight == 0)
-				{
+				//fixed by token (didn't catch out of range exception)
+				try {
+					lResModes.at(nMode - 3);
+				}
+				catch (const std::out_of_range&) {
 					DEBUGMSG("ERROR. Requested resolution is invalid (%dx%d)", lResModes.at(nMode - 3).nWidth, lResModes.at(nMode - 3).nHeight)
 					if (pWidth) *pWidth = 800;
 					if (pHeight) *pHeight = 600;
+					Misc::RegWriteDword("SOFTWARE\\Blizzard Entertainment\\Diablo II", "ExResolution", 2);
 					break;
 				}
+
 			/*	if (*D2Vars.D2GFX_DriverType == VIDEO_MODE_GLIDE)
 				{
 					const struct {
@@ -400,15 +405,32 @@ namespace ExMultiRes
 		{
 			GFX_SetResolutionMode(nMode);
 			if (*D2Vars.D2GFX_WindowMode == TRUE)
-			{
-				int sX = GetSystemMetrics(SM_CXSCREEN);
-				int sY = GetSystemMetrics(SM_CYSCREEN);
-
+			{				
 				RECT r = { 0 };
+
 				D2GFX_GetModeParams(nMode, (unsigned int*)&r.right, (unsigned int*)&r.bottom);
+
 				AdjustWindowRectEx(&r, 0xCB0000, FALSE, WS_EX_APPWINDOW);
-				SetWindowPos(D2Funcs.D2GFX_GetHwnd(), HWND_NOTOPMOST, sX / 2 - r.right /2, sY / 2 - r.bottom /2, r.right - r.left, r.bottom - r.top,  SWP_NOZORDER | SWP_NOACTIVATE);
 				
+
+				//modified by token to stop window from repositioning on game enter/leave
+				if (!FullScreen) {
+					static bool first = true;//allow window to be centered on first game enter, but never again
+					if (first) {
+						if (*D2Vars.D2CLIENT_InGame)
+							first = false;						
+						int x = GetSystemMetrics(SM_CXSCREEN);
+						int y = GetSystemMetrics(SM_CYSCREEN);
+						SetWindowPos(D2Funcs.D2GFX_GetHwnd(), HWND_NOTOPMOST, (x - (r.right - r.left)) / 2, (y - (r.bottom - r.top)) / 2, r.right - r.left, r.bottom - r.top, SWP_NOZORDER | SWP_NOACTIVATE);
+					}
+					else {
+						WINDOWPLACEMENT wp = {0};
+						GetWindowPlacement(D2Funcs.D2GFX_GetHwnd(), &wp);
+						SetWindowPos(D2Funcs.D2GFX_GetHwnd(), HWND_NOTOPMOST, wp.rcNormalPosition.left, wp.rcNormalPosition.top, r.right - r.left, r.bottom - r.top, SWP_NOZORDER | SWP_NOACTIVATE);
+					}
+				}
+				//end token modifications
+
 			}
 			BOOL res =(*D2Vars.D2GFX_pfnDriverCallback)->ResizeWin(D2Funcs.D2GFX_GetHwnd(), nMode);	 
 			D2GFX_SetStoredGammaAndContrast();
@@ -533,7 +555,6 @@ namespace ExMultiRes
 	int __stdcall GFX_GetRenderType() {	return *D2Vars.D2GFX_DriverType; }
 	int __stdcall GFX_GetScreenHeight() { return *D2Vars.D2CLIENT_ScreenHeight; }
 	int __stdcall GFX_GetScreenWidth() { return *D2Vars.D2CLIENT_ScreenWidth; }
-
 
 /*
 	Stuff for GLIDE renderer
@@ -717,6 +738,7 @@ namespace ExMultiRes
 	void __stdcall GetInventorySize(int nRecord, int nScreenMode, InventorySize *pOut) // Wrapper on D2Common.Ordinal10770
 	{
 		int xBottom, xTop;
+		
 		if (nScreenMode < 3) // Legacy support
 		{
 			if (nScreenMode == 2)
@@ -770,6 +792,7 @@ namespace ExMultiRes
 
 	void __stdcall GetInventoryGrid(int nRecord, int nScreenMode, InventoryGrid *pOut) // Wrapper on D2Common.Ordinal10964
 	{
+		
 		if (nScreenMode < 3) // Legacy support
 		{
 			if (nScreenMode == 2)
@@ -829,6 +852,7 @@ namespace ExMultiRes
 
 	void __stdcall GetInventoryField(int nRecord, int nScreenMode, InventoryLayout *pOut, int nField) // Wrapper on D2Common.Ordinal10441
 	{
+	
 		if (nScreenMode < 3) // Legacy support
 		{
 			if (nScreenMode == 2)
@@ -1117,12 +1141,11 @@ namespace ExMultiRes
 			if (!(
 				(w == 1280 && h == 1024) ||
 				(w == 1024 && h == 768)
-				))
+				) || DisableMultiRes)
 				continue;
 #else
 			if (GFX_GetRenderType() == VIDEO_MODE_GLIDE)
 			{
-
 				if (!((w == 1600 && h == 1200) ||
 					(w == 1280 && h == 1024) ||
 					(w == 1024 && h == 768) ||

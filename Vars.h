@@ -26,6 +26,7 @@ class ExFontManager;
 
 #include <vector>
 #include <deque>
+#include <map>
 #include <sstream>
 #include <string>
 #include <atomic>
@@ -72,7 +73,7 @@ GLOBAL(vector<COORDS>, TelePath)
 GLOBAL(vector<BYTE>, BlockedPackets)
 
 GLOBAL(int, bLagometer)
-GLOBAL(exId,  GoldBox)
+GLOBAL(exId, GoldBox)
 GLOBAL(exId, lagometer)
 GLOBAL(int, Port)
 GLOBAL(ExCellFile*, CellBox)
@@ -89,8 +90,8 @@ GLOBAL(DWORD, PVMStuff)
 GLOBAL(int, ExpAtJoin)
 GLOBAL(BOOL, (__fastcall *cb01)(BYTE* aPacket))
 GLOBAL(BOOL, (__fastcall *cb02)(BYTE* aPacket))
-GLOBAL(vector<ExControl*>,Controls)
-GLOBAL(vector<ItemConfig>,ItemArray)
+GLOBAL(vector<ExControl*>, Controls)
+GLOBAL(vector<ItemConfig>, ItemArray)
 GLOBAL(WNDPROC,OldWNDPROC)
 GLOBAL(CRITICAL_SECTION, EX_CRITSECT)
 GLOBAL(CRITICAL_SECTION, MEM_CRITSECT)
@@ -102,7 +103,15 @@ GLOBAL(int, EnchLvl)
 GLOBAL(int, AmpLvl)
 GLOBAL(int, LRLvl)
 GLOBAL(int, SMLvl)
+GLOBAL(int, CursorHKey)
 GLOBAL(int, BuffsEnabled)
+GLOBAL(int, CursorLockHKey)
+GLOBAL(int, InviteAllHKey)
+GLOBAL(int, ADDHK)
+GLOBAL(int, REMOVEHK)
+GLOBAL(int, FullScreen)
+GLOBAL(int, HiddenCol)
+GLOBAL(int, DisableMultiRes)
 GLOBAL(string, ConfigIni)
 GLOBAL(string, D2ExDir)
 GLOBAL(void*, MPQHandle)
@@ -122,11 +131,6 @@ GLOBAL(short, VK_FastTP)
 
 GLOBAL(int, gRespawnTime)
 GLOBAL(bool, gDisableSpectator)
-
-GLOBAL(int, gMaxFireResCap)
-GLOBAL(int, gMaxColdResCap)
-GLOBAL(int, gMaxLightResCap)
-GLOBAL(int, gMaxPsnResCap)
 
 #undef GLOBAL
 #undef __DEFINE_VARS

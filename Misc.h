@@ -33,13 +33,17 @@ namespace Misc
 {
 	char * decomma(char *str);
 	string DrawModeToString(int nDrawMode);
+	void RegWriteString(const char * key, const char* name, string value);
+	string RegReadString(const char * key, const char* value, string default);
 	void RegWriteDword(const char * key, const char* name, const DWORD value);
 	int RegReadDword(const char * key, const char* value, const DWORD default);
 	void Debug(const char * szFunction, char *format, ...);
 	void Debug(const char * szFunction, wchar_t *format, ...);
 	wstring ConvertTickToTime(DWORD Tick);
 	int ClampInt( int min, int max, int value);
+	string TransColor(int col);
 	int TransColor(string str);
+	string TransQuality(int qual);
 	int TransQuality(string str);
 	DWORD TransCode(const char* ptCode);
 	const char* TransCode(DWORD dwCode);

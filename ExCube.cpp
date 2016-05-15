@@ -86,9 +86,9 @@ BOOL __fastcall ExCube::TXT_CubemainOutputLinker(const char *szText, CubeMainTxt
 		return FALSE;
 
 	CubeOutputItem* pField = &pTxt->OutputItem[nOffset];
+
 	regex cube_regexp("([\\w ]+)(?:=(\\w+))?,?");
 	smatch match;
-
 	for (string text(szText); regex_search(text, match, cube_regexp); text = match.suffix().str()) {
 		if (match.empty()) {
 			DEBUGMSG("No matches for %s", text.c_str());

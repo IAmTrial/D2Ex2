@@ -34,7 +34,54 @@
 #include "ExFontManager.h"
 #include "ExBuffs.h"
 
-#include "Build.h"
+//#include "Build.h"
+
+//token made this funciton
+void ExScreen::ToggleFullScreen(int state, int delay/* = 0*/) {
+	if (delay)
+		this_thread::sleep_for(chrono::milliseconds(delay));
+
+	static LONG style = GetWindowLong(D2Funcs.D2GFX_GetHwnd(), GWL_STYLE);
+	static LONG exstyle = GetWindowLong(D2Funcs.D2GFX_GetHwnd(), GWL_EXSTYLE);
+
+	int x = GetSystemMetrics(SM_CXSCREEN);
+	int y = GetSystemMetrics(SM_CYSCREEN);
+
+	if (state) {
+		//D2FS credit
+
+		int mx = *D2Vars.D2CLIENT_MouseX;
+		int my = *D2Vars.D2CLIENT_MouseY;
+
+		LONG newstyle = ((style | exstyle) & ~(WS_EX_DLGMODALFRAME | WS_EX_COMPOSITED | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZE | WS_MAXIMIZE | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_BORDER));
+		if ((style | exstyle) != newstyle) {
+			HMENU menu = GetMenu(D2Funcs.D2GFX_GetHwnd());
+			if (menu) {
+				int menucount = GetMenuItemCount(menu);
+				if (menucount != -1) {
+					for (UINT i = 0; i < menucount; i++)
+						RemoveMenu(menu, 0, MF_BYPOSITION);
+				}
+			}
+			SetWindowLong(D2Funcs.D2GFX_GetHwnd(), GWL_EXSTYLE, newstyle);
+			SetWindowLong(D2Funcs.D2GFX_GetHwnd(), GWL_STYLE, newstyle);
+			SetWindowPos(D2Funcs.D2GFX_GetHwnd(), NULL, 0, 0, x, y, SWP_NOOWNERZORDER);
+
+			*D2Vars.D2CLIENT_MouseX = mx;
+			*D2Vars.D2CLIENT_MouseY = my;
+		}
+	}
+	else {
+		SetWindowLong(D2Funcs.D2GFX_GetHwnd(), GWL_EXSTYLE, exstyle);
+		SetWindowLong(D2Funcs.D2GFX_GetHwnd(), GWL_STYLE, style);
+
+		RECT r = {0};
+		ExMultiRes::D2GFX_GetModeParams(*D2Vars.D2GFX_GfxMode, (unsigned int*)&r.right, (unsigned int*)&r.bottom);
+		AdjustWindowRectEx(&r, 0xCB0000, FALSE, WS_EX_APPWINDOW);
+
+		SetWindowPos(D2Funcs.D2GFX_GetHwnd(), HWND_NOTOPMOST, (x - (r.right - r.left)) / 2, (y - (r.bottom - r.top)) / 2, r.right - r.left, r.bottom - r.top, SWP_NOZORDER | SWP_NOACTIVATE);
+	}
+}
 
 #undef min
 #undef max
@@ -248,7 +295,9 @@ void ExScreen::DrawTextEx(int X, int Y, int Color, int Cent, int TransLvl, char*
 void __stdcall ExScreen::Display()
 {
 #ifdef D2EX_MULTIRES
-	ExMultiRes::DrawMissingPieces();
+	if (!DisableMultiRes) {
+		ExMultiRes::DrawMissingPieces();
+	}
 #endif
 
 #if defined( _DEBUG) || defined(D2EX_DEBUG_INFO)
@@ -398,14 +447,15 @@ void ExScreen::DrawAutoMapVer()
 	*D2Vars.D2CLIENT_AutomapInfoY+=16;
 
 #ifdef D2EX_MULTIRES
-	unsigned int x, y;
-	ExMultiRes::D2GFX_GetModeParams(ExMultiRes::GFX_GetResolutionMode(), &x, &y);
-	if (x > 800 && y > 600)
-	{
-		wRes << (gLocaleId == LOCALE_ENG ? L"Resolution: " : L"Rozdzielczoœæ: ") << GetColorCode(COL_YELLOW) << x << L"x" << y;
-		int cSize2 = ExScreen::GetTextWidth(wRes.str().c_str());
-		D2Funcs.D2WIN_DrawText(wRes.str().c_str(), *D2Vars.D2CLIENT_ScreenWidth - cSize2 - 16, *D2Vars.D2CLIENT_AutomapInfoY, 4, 0);
-		*D2Vars.D2CLIENT_AutomapInfoY += 16;
+	if (!DisableMultiRes) {
+		unsigned int x, y;
+		ExMultiRes::D2GFX_GetModeParams(ExMultiRes::GFX_GetResolutionMode(), &x, &y);
+		if (x > 800 && y > 600) {
+			wRes << (gLocaleId == LOCALE_ENG ? L"Resolution: " : L"Rozdzielczoœæ: ") << GetColorCode(COL_YELLOW) << x << L"x" << y;
+			int cSize2 = ExScreen::GetTextWidth(wRes.str().c_str());
+			D2Funcs.D2WIN_DrawText(wRes.str().c_str(), *D2Vars.D2CLIENT_ScreenWidth - cSize2 - 16, *D2Vars.D2CLIENT_AutomapInfoY, 4, 0);
+			*D2Vars.D2CLIENT_AutomapInfoY += 16;
+		}
 	}
 #endif
 }
@@ -493,15 +543,14 @@ void __fastcall ExScreen::ColorItems(wchar_t* szName, UnitAny* ptItem)
 	
 	if(pTxt->bquest) ColNo = COL_DARK_GOLD;
 	BOOL isEth = D2Funcs.D2COMMON_GetItemFlag(ptItem,ITEMFLAG_ETHEREAL,__LINE__,__FILE__);
-
-	for(vector<ItemConfig>::iterator i = ItemArray.begin(); i!=ItemArray.end(); i++)
-	{
-		if(i->Code == pTxt->dwcode)
-		{
-			if(i->Quality==ptItem->pItemData->QualityNo || i->Quality == 0)
-			{
-				ColNo = i->Color;
-				break;
+	//token changed this for item filtering
+	if (!(GetAsyncKeyState(VK_MENU) < 0 && GetAsyncKeyState(VK_CONTROL) < 0)) {
+		for (auto & i : ItemArray) {
+			if (i.Code == pTxt->dwcode) {
+				if ((i.Quality == ptItem->pItemData->QualityNo || i.Quality == 0) && i.Color != -1) {
+					ColNo = HideCrap ? i.Color == 16 ? HiddenCol != -1 ? HiddenCol : ColNo : i.Color : ColNo;					
+					break;
+				}
 			}
 		}
 	}
@@ -805,7 +854,7 @@ BOOL __stdcall ExScreen::OnDamagePropertyBuild(UnitAny* pItem, DamageStats* pDmg
 
 // UniqueItems->UniqueItemsTxtStat->PropertiesTxt-> Final stat!
 void __stdcall ExScreen::OnPropertyBuild(wchar_t* wOut, int nStat, UnitAny* pItem, int nStatParam)
-{
+{	
 	if (gControl && pItem && pItem->dwType == UNIT_ITEM) {
 		ItemsTxtStat* stat = 0;
 		ItemsTxtStat* all_stat = 0; // Stat for common modifer like all-res, all-stats
@@ -823,6 +872,7 @@ void __stdcall ExScreen::OnPropertyBuild(wchar_t* wOut, int nStat, UnitAny* pIte
 		{
 			if (pItem->pItemData->QualityNo == ITEM_UNIQUE) {
 				UniqueItemsTxt * pTxt = &(*D2Vars.D2COMMON_sgptDataTables)->pUniqueItemsTxt[pItem->pItemData->FileIndex];
+
 				if (!pTxt)
 					break;
 				stat = GetItemsTxtStatByMod(pTxt->hStats, 12, nStat, nStatParam);
@@ -1005,75 +1055,6 @@ void __stdcall ExScreen::DrawProperties(wchar_t *wTxt)
 	}
 #endif
 
-
-}
-
-
-/**
-	Patch the 95 max res hardcap
-	@location D2Client.0xC00BF
-	@regs: eax - max res value
-		   [esp - 8] - max stat [*be careful*]
-	@org code
-		.text:6FB700BF 3CC                 cmp     eax, 5Fh
-		.text:6FB700C2 3CC                 jl      short loc_6FB700C9
-		.text:6FB700C4 3CC                 mov     eax, 5Fh
-*/
-void __declspec(naked) ExScreen::OnResistanceMaxCapDraw_STUB()
-{
-	__asm
-	{
-
-		mov ecx, [esp - 4] // our stat
-
-		push eax
-
-		cmp ecx, STAT_MAXFIRERESIST
-		jne not_fire
-
-		cmp eax, [gMaxFireResCap]
-		jl not_psn
-		mov eax, [gMaxFireResCap]
-		jmp new_val
-
-		not_fire:
-		cmp ecx, STAT_MAXCOLDRESIST
-		jne not_cold
-
-		cmp eax, [gMaxColdResCap]
-		jl not_psn
-		mov eax, [gMaxColdResCap]
-		jmp new_val
-
-		not_cold:
-		cmp ecx, STAT_MAXLIGHTRESIST
-		jne not_light
-
-		cmp eax, [gMaxLightResCap]
-		jl not_psn
-		mov eax, [gMaxLightResCap]
-		jmp new_val
-
-		not_light:
-		cmp ecx, STAT_MAXPOISONRESIST
-		jne not_psn
-
-		cmp eax, [gMaxPsnResCap]
-		jl not_psn
-		mov eax, [gMaxPsnResCap]
-		jmp new_val
-
-
-		not_psn: // ignore result
-
-		pop eax
-		ret
-
-		new_val: // do the cap
-		add esp, 4	//ignore old eax
-
-		ret
-	}
 
 }
 
@@ -1301,8 +1282,14 @@ BOOL __stdcall ExScreen::OnALTDraw(UnitAny *ptItem)
 	if(HideGold && dwCode == ' dlg' && D2Funcs.D2COMMON_GetStatSigned(ptItem,STAT_GOLD,0)>10000) return TRUE;
 	if(!HideGold && dwCode == ' dlg') return TRUE;
 	if(HideGold && dwCode == ' dlg') return FALSE;
-	if(pTxt->wtype == 74) return TRUE;
-	if(HideCrap && (ptItem->pItemData->QualityNo==ITEM_NORMAL || ptItem->pItemData->QualityNo==ITEM_LOW) && !pTxt->bquest) return FALSE;
+///	if (pTxt->wtype == 74) return TRUE;//removing this allows runes to be hidden
+
+	//token changed this
+	if ((HideCrap && !(GetAsyncKeyState(VK_MENU) < 0 && GetAsyncKeyState(VK_CONTROL) < 0)) 
+		|| (!HideCrap && (GetAsyncKeyState(VK_MENU) < 0 && GetAsyncKeyState(VK_CONTROL) < 0))) {
+		for (auto i : ItemArray) 
+			if (i.Code == dwCode && (i.Quality == ptItem->pItemData->QualityNo || i.Quality == 0) && i.Color == 16 && !pTxt->bquest) return FALSE;
+	}
 
 	return TRUE;
 }

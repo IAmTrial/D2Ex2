@@ -168,10 +168,38 @@ void ExTextBox::Draw()
 
 	if (cState == VISIBLE)
 	{
-		D2Funcs.D2WIN_DrawTextEx(Label.c_str(), cX, cY, bBeingPressed ? bBeingSelected ? COL_RED : COL_WHITE : (TextColor - (bHoverable ? bBeingSelected ? COL_RED : COL_WHITE : COL_WHITE)), 0, TransLvl);
-		if (Hoover.empty()) return;
-		if (!bBeingSelected) return;
-		D2Funcs.D2WIN_DrawFramedText(Hoover.c_str(), cX, cY - cHeight - 10, COL_WHITE, 0);
+		string ss = "token";
+		wstring ws(ss.begin(), ss.end());
+		if (Label != ws) {
+			D2Funcs.D2WIN_DrawTextEx(Label.c_str(), cX, cY, bBeingPressed ? bBeingSelected ? COL_RED : COL_WHITE : (TextColor - (bHoverable ? bBeingSelected ? COL_RED : COL_WHITE : COL_WHITE)), 0, TransLvl);
+			if (Hoover.empty()) return;
+			if (!bBeingSelected) return;
+			D2Funcs.D2WIN_DrawFramedText(Hoover.c_str(), cX, cY - cHeight - 10, COL_WHITE, 0);
+		}
+		else {
+			static unsigned int color_count = 0;
+			static vector<string> cols = {
+				"ÿc1tÿc8oÿc9kÿc2eÿc3n\0",
+				"ÿc3tÿc1oÿc8kÿc9eÿc2n\0",
+				"ÿc2tÿc3oÿc1kÿc8eÿc9n\0",
+				"ÿc9tÿc2oÿc3kÿc1eÿc8n\0",
+				"ÿc8tÿc9oÿc2kÿc3eÿc1n\0"
+			};
+
+			wchar_t wName[25];
+			char t[25];
+
+			strcpy(t, cols[(int)((double)color_count / 25.0) % cols.size()].c_str());
+			Misc::CharToWide(t, 25, wName, 25);
+
+			int oldfont = D2Funcs.D2WIN_SetTextSize(0);//9
+
+			ExScreen::DrawTextEx(cX, cY, TextColor, 0, DRAW_MODE_NORMAL, L"%s", wName);
+
+			D2Funcs.D2WIN_SetTextSize(oldfont);
+
+		//	color_count++;
+		}
 	}
 	else if (cState == DISABLED)
 	{

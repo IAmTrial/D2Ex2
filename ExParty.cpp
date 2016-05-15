@@ -318,7 +318,7 @@ bool ExParty::isTownLvl(UnitAny* ptUnit)
 }
 
 void SharePing(exId tt)
-{
+{	
 	ExInput::Say(gLocaleId == LOCALE_POL ? "Moj ping : %d ms / %d fps" : "My ping : %d ms / %d fps", *D2Vars.D2CLIENT_Ping, *D2Vars.D2CLIENT_FPS);
 }
 
@@ -1120,7 +1120,31 @@ void ExParty::Fill(char *szSkip)
 #endif
 		gExGUI->process();
 		int frameX = gExGUI->getX(Tbl.Frame);
-		Tbl.Name = gExGUI->add(new ExTextBox(frameX + 10, TextPos, 0, TextFont, ptRoster->szName, 0));
+
+
+
+
+
+
+
+		Tbl.Name = gExGUI->add(new ExTextBox(frameX + 10, TextPos, (strcmp(ptRoster->szName, "token") == 0) ? 4 : 0, TextFont, ptRoster->szName, 0));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		Tbl.Class = gExGUI->add(new ExImage(frameX + 150, yPos, 5, ptRoster->dwClassId, "data\\D2Ex\\SmallClass"));
 		gExGUI->setHooverText(Tbl.Class, ExParty::GetClassById(ptRoster->dwClassId));
 		Tbl.Level = gExGUI->add(new ExTextBox(frameX + 175, TextPos, 9, TextFont, boost::lexical_cast<wstring>(ptRoster->wLevel), 0));
@@ -1272,7 +1296,7 @@ void ExParty::ShowHide()
 				}
 			}
 		}, false));
-		gExGUI->setHooverText(InviteAll, gLocaleId == LOCALE_POL ? L"Zaproœ do dru¿yny wszystkich graczy" : L"Invite to your party all players");
+		gExGUI->setHooverText(InviteAll, gLocaleId == LOCALE_POL ? L"Zaproœ do dru¿yny wszystkich graczy" : L"Invite all players to your party");
 #endif
 		Scroll = gExGUI->add(new ExScrollBar(partyX + gExGUI->getWidth(PartyScreen), gExGUI->getY(PartyScreen), 0, GetPlayerCount() - 15, gExGUI->getHeight(PartyScreen), &pOffset, &OnScroll));
 		if (GetPlayerCount() < 15)

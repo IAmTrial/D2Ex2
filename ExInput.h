@@ -29,6 +29,8 @@
 #include "ExOOG.h"
 #include "ExFriends.h"
 
+#define ADD_FILTER_ITEM 1
+#define REMOVE_FILTER_ITEM 2
 
 namespace ExInput
 {
@@ -39,6 +41,9 @@ void DefineBindings();
 void UndefineBindings();
 WORD GetKeyBind(int nEntry, BOOL bPrimary);
 wchar_t* GetNameOfKey(WORD vKey);
+
+extern vector<HWND> g_D2HWNDS;
+BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam);
 
 DWORD __fastcall GameInput(wchar_t* wMsg);
 void __stdcall RealmInput(wchar_t* Text, int Color);

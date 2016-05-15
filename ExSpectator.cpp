@@ -151,8 +151,8 @@ void __stdcall ExSpec::OnShake(int* xShake, int * yShake)
 	*yShake = D2Funcs.D2COMMON_GetUnitYOffset(D2Funcs.D2CLIENT_GetPlayer()) + *D2Vars.D2CLIENT_ShakeY - ((v->ViewRadius.bottom - v->ViewRadius.top) / 2);
 	*/
 //	return;
-
-	if (gSpecing)
+	//token made this true
+	if (true || gSpecing)
 	{
 		UnitAny* u = D2Funcs.D2CLIENT_GetUnitById(gSpectatorTarget, UNIT_PLAYER);
 		if (u)

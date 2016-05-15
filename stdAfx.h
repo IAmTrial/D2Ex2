@@ -19,18 +19,21 @@
 */
 
 #define WIN32_LEAN_AND_MEAN
+#define RAINBOW
+//#define CONSOLE
+
 //Build flags
 //--------- General Flags ----------------
 //#define D2EX_CLOSED_BNET "Closed Bnet|"		// Set you gonna use this on Blizzard BNet
 //#define D2EX_SCRAP_HACKS "Scrap Hacks|"		// - || -
-//#define D2EX_MULTIRES "Multi Res|"				// Enables high resolution settings
+#define D2EX_MULTIRES "Multi Res|"				// Enables high resolution settings
 #define D2EX_PVPGN_EXT "PvPGN Extensions|"		// Enables serverside stuff like kill counter, spectator mode etc [Needs serverside dll to work]
 //#define D2EX_EXAIM_ENABLED "ExAim|"			// Experimental -- never finished | may not work --
 //#define D2EX_PVM_BUILD "PvM|"					// Enables Maphack with monsters on the map, autotele, etc.
 #define D2EX_MAX_SND_TXT_ROWS 4954				// Maximum rows in Sound.txt
 #define	D2EX_I_NEED_CUBE					// Define if you need transmute button
-#define D2EX_ENABLE_PACKET_COMMANDS				// Enables packet sender (#send, #recv, #block)
-#define D2EX_DEBUG_INFO							// Display Selected unit info (id, x, y)
+//#define D2EX_ENABLE_PACKET_COMMANDS				// Enables packet sender (#send, #recv, #block)
+//#define D2EX_DEBUG_INFO							// Display Selected unit info (id, x, y)
 #define D2EX_PRINT_ITEMLEVEL					// Add item level property to an item
 #define D2EX_EXTENDED_LEVELS					// Allows to add new levels (up to 255)
 //*******************************************
@@ -39,7 +42,7 @@
 #ifdef D2EX_MULTIRES
 //#define D2EX_OPENGL "OpenGL|"					// Enables OpenGL render mode
 #define D2EX_ALLOWHIGHRES "Hi Res|"				// Enables support for 800x600+
-//#define D2EX_MINIMALRES							// Restrict resolution to 1024x768 and 1280x1024
+#define D2EX_MINIMALRES							// Restrict resolution to 1024x768 and 1280x1024
 #endif
 //******************************************
 

@@ -44,6 +44,7 @@ struct _d2f {
 #else
 _d2f D2Funcs = {0}; void SetupD2Funcs() {
 #endif
+
 	EXFUNCPTR(D2CLIENT, PrintGameString, void, __stdcall, (const wchar_t* wMessage, int nColor), 0x75EB0) // ns
 		EXFUNCPTR(D2CLIENT, PrintPartyString, void, __stdcall, (const wchar_t* wMessage, int nColor), 0x75C70) //ns
 		EXFUNCPTR(D2CLIENT, GetPlayer, UnitAny*, __stdcall, (void), 0x613C0) //ns
@@ -344,6 +345,8 @@ void SetupD2Vars() {
 		EXVARPTR(D2CLIENT, CurrentName, char*, 0x108888) //k
 		EXVARPTR(D2CLIENT, BNCurrentClass, BYTE, 0xF7B38) //k
 		EXVARPTR(D2CLIENT, OpenCurrentClass, BYTE, 0x10887C) //k
+
+		EXVARPTR(D2CLIENT, NoPickUp, DWORD, 0x11D574)//added by token
 
 		//-----Packets things
 		EXVARPTR(D2CLIENT, PacketHandler, D2PacketTable, 0xEF4B0) //k

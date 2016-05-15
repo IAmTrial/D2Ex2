@@ -34,6 +34,7 @@ struct ActMisc;
 struct Path;
 struct StatList;
 struct Inventory;
+struct InventoryStore;
 struct Light;
 struct Info;
 struct Skill;
@@ -87,13 +88,22 @@ struct Inventory
 	UnitAny* pOwner;				//0x08
 	UnitAny* pFirstItem;			//0x0C
 	UnitAny* pLastItem;				//0x10
-	DWORD _1[2];					//0x14
-	DWORD dwLeftItemUid;			//0x1C
+	DWORD pStores;					//0x14  InventoryStore* [count]
+	DWORD dwStoresCount;			//0x1C
 	UnitAny* pCursorItem;			//0x20
 	DWORD dwOwnerId;				//0x24
 	DWORD dwItemCount;				//0x28
 	DWORD _2[4];					//0x2C
 	DWORD CorpseNumber;				//0x3C
+};
+
+struct InventoryStore {
+	DWORD pFirstItem;				//0x00
+	DWORD pLastItem;				//0x04
+	BYTE Width;						//0x08
+	BYTE Height;					//0x09
+	BYTE unk[2];					//0x0A
+	DWORD pArray;					//0x0C UnitAny* [height][width]
 };
 
 struct ItemData {
@@ -229,7 +239,7 @@ struct AutoMapLayer2
 };
 
 struct PresetUnit {
-	DWORD _1;						//0x00
+	DWORD dwTxtFileNo;				//0x00
 	DWORD dwClassId;				//0x04
 	DWORD dwPosX;					//0x08
 	PresetUnit* pPresetNext;		//0x0C

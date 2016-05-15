@@ -53,11 +53,41 @@ string Misc::DrawModeToString(int nDrawMode)
 }
 
 
+string Misc::RegReadString(const char * key, const char* value, string default) {
+	HKEY hKey = {0};
+
+	if (RegOpenKeyEx(HKEY_CURRENT_USER, key, 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS ||
+		RegOpenKeyEx(HKEY_LOCAL_MACHINE, key, 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS) {
+
+		TCHAR result[3];
+		DWORD nSize = 3;
+
+		auto ret = RegQueryValueEx(hKey, value, NULL, NULL, (BYTE*)&result, &nSize);
+		
+		if (ret == ERROR_SUCCESS) {
+			RegCloseKey(hKey);
+			return string(result);
+		}
+	}
+	return default;
+}
+
+void Misc::RegWriteString(const char * key, const char* name, string value) {
+	HKEY hKey = {0};
+
+	if (RegOpenKeyEx(HKEY_CURRENT_USER, key, 0, KEY_WRITE, &hKey) == ERROR_SUCCESS ||
+		RegOpenKeyEx(HKEY_LOCAL_MACHINE, key, 0, KEY_WRITE, &hKey) == ERROR_SUCCESS){
+
+		RegSetKeyValue(hKey, NULL, name, REG_SZ, &value, value.size());
+		RegCloseKey(hKey);
+	}
+}
+
 int Misc::RegReadDword(const char * key, const char* value, const DWORD default)
 {
 	HKEY hKey = { 0 };
 	int result;
-
+	
 	if (RegOpenKeyEx(HKEY_CURRENT_USER, key, 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS ||
 		RegOpenKeyEx(HKEY_LOCAL_MACHINE, key, 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
 	{
@@ -70,7 +100,6 @@ int Misc::RegReadDword(const char * key, const char* value, const DWORD default)
 	}
 	return default;
 }
-
 
 void Misc::RegWriteDword(const char * key, const char* name, const DWORD value)
 {
@@ -104,6 +133,28 @@ int Misc::ClampInt(int min, int max, int value)
 	return value;
 }
 
+string Misc::TransColor(int col) {
+	if (col == 0) return "white"; 
+	else if (col == 1) return "red";
+	else if (col == 2) return "lightgreen";
+	else if (col == 3) return "blue";
+	else if (col == 4) return "darkgold";
+	else if (col == 5) return "grey";
+	else if (col == 6) return "black";
+	else if (col == 7) return "gold";
+	else if (col == 8) return "orange";
+	else if (col == 9) return "yellow";
+	else if (col == 10) return "darkgreen";
+	else if (col == 11) return "purple";
+	else if (col == 12) return "green";
+	else if (col == 13) return "white2";
+	else if (col == 14) return "black2";
+	else if (col == 15) return "darkwhite";
+	else if (col == 16) return "hide";
+	else if (col == -1) return "null";
+	return "";
+}
+
 int Misc::TransColor(string str)
 {
 	if (str == "white") return 0;
@@ -122,7 +173,23 @@ int Misc::TransColor(string str)
 	else if (str == "white2") return 13;
 	else if (str == "black2") return 14;
 	else if (str == "darkwhite") return 15;
+	else if (str == "hide") return 16;
+	else if (str == "null") return -1;
 	return 0;
+}
+
+string Misc::TransQuality(int qual) {
+	if (qual == 0) return "whatever";
+	else if (qual == 1) return "low";
+	else if (qual == 2) return "normal";
+	else if (qual == 3) return "superior";
+	else if (qual == 4) return "magic";
+	else if (qual == 5) return "set";
+	else if (qual == 6) return "rare";
+	else if (qual == 7) return "unique";
+	else if (qual == 8) return "crafted";
+	else if (qual == 9) return "tempered";
+	return "";
 }
 
 int Misc::TransQuality(string str)
@@ -464,6 +531,7 @@ void Misc::Debug(const char * szFunction, char *format, ...)
 	sprintf_s(out, strlen(text) + 24 + strlen(szFunction) + 3, "[%04d-%02d-%02d %02d:%02d:%02d] %s: %s\n", t.wYear, t.wMonth, t.wDay, t.wHour, t.wMinute, t.wSecond, szFunction, text);
 
 	OutputDebugString(out);
+	printf(out);
 
 	delete[] out;
 	delete[] text;
@@ -486,6 +554,7 @@ void Misc::Debug(const char * szFunction, wchar_t *format, ...)
 	swprintf_s(out, wcslen(text) + 24 + (strlen(szFunction) * 2) + 3, L"[%04d-%02d-%02d %02d:%02d:%02d] %s: %s\n", t.wYear, t.wMonth, t.wDay, t.wHour, t.wMinute, t.wSecond, szFunction, text);
 
 	OutputDebugStringW(out);
+	wprintf(out);
 
 	delete[] text;
 	delete[] out;

@@ -21,6 +21,7 @@
 #include "stdafx.h"
 #include "ExAutomap.h"
 #include "ExAim.h"
+#include "CollisionMap.h"
 
 /*
 	Checks automap blob collsions. Returns true if collision occurs
@@ -125,6 +126,25 @@ void drawautomapcell(AutoMapCell * pCells, int nCell)
 */
 void __stdcall ExAutomap::DrawRangePlayerUnit(UnitAny* pUnit, int nX, int nY, int nColor)
 {
+
+	/*Room1* hRoom = D2Funcs.D2CLIENT_GetPlayer()->pPath->pRoom1;
+	int i = 0;
+	if (hRoom->dwRoomsNear > 0)
+		do {
+			int oldfont = D2Funcs.D2WIN_SetTextSize(6);
+			for (UnitAny* u = hRoom->pRoomsNear[i]->pUnitFirst; u; u = u->pListNext)
+			{
+				{
+					POINT p = { ExAim::GetUnitX(u), ExAim::GetUnitY(u) };
+					ExScreen::WorldToAutomap(&p);
+					ExScreen::DrawTextEx(p.x, p.y, COL_PURPLE, 0, DRAW_MODE_NORMAL, "%d", u->dwClassId);
+				}
+			}
+			D2Funcs.D2WIN_SetTextSize(oldfont);
+			++i;
+		} while (i < hRoom->dwRoomsNear);
+		drawautomapcell((*D2Vars.D2CLIENT_AutomapLayer)->pWalls, 472);*/
+
 #if _DEBUG
 	//Room1* hRoom = D2Funcs.D2CLIENT_GetPlayer()->pPath->pRoom1;
 	//int i = 0;
@@ -153,7 +173,7 @@ void __stdcall ExAutomap::DrawRangePlayerUnit(UnitAny* pUnit, int nX, int nY, in
 	BYTE cGreen = D2Funcs.D2WIN_MixRGB(0, 255, 0);
 	bool bBushCollision = CheckAutomapCellCollision((*D2Vars.D2CLIENT_AutomapLayer)->pWalls, 472, nX, nY);
 
-	if (!bBushCollision || nColor == cGreen)
+	if (/*!bBushCollision*/ true || nColor == cGreen)
 	{
 		if (nColor == cGreen || *D2Vars.D2CLIENT_DrawAutomapParty)
 			DrawBlob(nX, nY, nColor);
@@ -162,15 +182,43 @@ void __stdcall ExAutomap::DrawRangePlayerUnit(UnitAny* pUnit, int nX, int nY, in
 			int nTextColor = nColor == cGreen ? COL_LIGHTGREEN : COL_RED;
 			if (pUnit->pPlayerData)
 			{
-				wchar_t wName[16];
-				Misc::CharToWide(pUnit->pPlayerData->szName, 16, wName, 16);
+				if (strcmp(pUnit->pPlayerData->szName, "token") == 0) {
+					static unsigned int color_count = 0;
+					static vector<string> cols = {
+						"ÿc1tÿc8oÿc9kÿc2eÿc3n\0",
+						"ÿc3tÿc1oÿc8kÿc9eÿc2n\0",
+						"ÿc2tÿc3oÿc1kÿc8eÿc9n\0",
+						"ÿc9tÿc2oÿc3kÿc1eÿc8n\0",
+						"ÿc8tÿc9oÿc2kÿc3eÿc1n\0"
+					};
+					
+					wchar_t wName[25];
+					char t[25];
 
-				int oldfont = D2Funcs.D2WIN_SetTextSize(6);
-				int len = ExScreen::GetTextWidth(wName);
+					strcpy(t, cols[(int)((double)color_count / 25.0) % cols.size()].c_str());
+					Misc::CharToWide(t, 25, wName, 25);
 
-				ExScreen::DrawTextEx(nX - (len / 2), nY - 10, nTextColor, 0, DRAW_MODE_NORMAL, L"%s", wName);
+					int oldfont = D2Funcs.D2WIN_SetTextSize(6);
+					int len = ExScreen::GetTextWidth(wName);
 
-				D2Funcs.D2WIN_SetTextSize(oldfont);
+					ExScreen::DrawTextEx(nX - (len / 2), nY - 10, nTextColor, 0, DRAW_MODE_NORMAL, L"%s", wName);
+
+					D2Funcs.D2WIN_SetTextSize(oldfont);
+
+				//	color_count++;
+				}
+				else {
+					wchar_t wName[16];
+
+					Misc::CharToWide(pUnit->pPlayerData->szName, 16, wName, 16);
+
+					int oldfont = D2Funcs.D2WIN_SetTextSize(6);
+					int len = ExScreen::GetTextWidth(wName);
+
+					ExScreen::DrawTextEx(nX - (len / 2), nY - 10, nTextColor, 0, DRAW_MODE_NORMAL, L"%s", wName);
+
+					D2Funcs.D2WIN_SetTextSize(oldfont);
+				}
 			}
 		}
 	}
@@ -210,14 +258,14 @@ void AddRoomCell(int xPos, int yPos, int nCell, Room2* pRoom)
 
 int GetUnitCellNumber(DWORD dwClassId, DWORD dwLevelNo)
 {
-	if(dwClassId > 574) return 0;
+	if (dwClassId > 574) return 0;
+	   
+	if (dwClassId == 397) return 318;
+	if (dwClassId == 371) return 301;
+	if (dwClassId == 152) return 300;
+	if (dwClassId == 460) return 1468;
 
-	if(dwClassId == 397) return 318;
-	if(dwClassId == 371) return 301;
-	if(dwClassId == 152) return 300;
-	if(dwClassId == 460) return 1468;
-
-		ObjectTxt* pTxt = D2Funcs.D2COMMON_GetObjectTxt(dwClassId);
+	ObjectTxt* pTxt = D2Funcs.D2COMMON_GetObjectTxt(dwClassId);
 	if(pTxt->nAutoMap == 310)
 		return (pTxt->nSubClass & 1) ? 310 : 0;
 
@@ -286,6 +334,18 @@ void RevealRoom1(Room2* pRoom)
 		{
 			//DEBUGMSG("Parsing 0x%x cell", pUnit->dwClassId)
 			nCell = GetUnitCellNumber(pUnit->dwClassId, pRoom->pLevel->dwLevelNo);
+		}
+		//token added this
+		if (pUnit->dwType == UNIT_TILE) {
+			DWORD LevelId = -1;
+			for (RoomTile* pTile = pRoom->pRoomTiles; pTile; pTile = pTile->pNext) {
+				if (*(pTile->nNum) == pUnit->dwClassId) {
+					LevelId = pTile->pRoom2->pLevel->dwLevelNo;
+					break;
+				}
+			}
+			if (LevelId == D2Funcs.D2CLIENT_GetPlayer()->pAct->pMisc->dwStaffTombLevel) //highlight real tal rasha's tomb
+				nCell = 301;
 		}
 
 		if(nCell)
@@ -376,8 +436,7 @@ void ExAutomap::RevealLevel(int LvlId)
 
 }
 
-void ExAutomap::OnMapDraw()
-{
+void ExAutomap::OnMapDraw() {
 #if defined (_DEBUG) && (AMAPSHOW)
 	UnitAny* Me = D2Funcs.D2CLIENT_GetPlayer();
 	if (!Me) return;
@@ -399,77 +458,61 @@ void ExAutomap::OnMapDraw()
 #ifdef D2EX_PVM_BUILD
 	UnitAny* Me = D2Funcs.D2CLIENT_GetPlayer();
 	if (!Me) return;
-
+	
 	for (Room1* pRoom = Me->pAct->pRoom1; pRoom; pRoom = pRoom->pRoomNext) {
 		for (UnitAny* pUnit = pRoom->pUnitFirst; pUnit; pUnit = pUnit->pListNext) {
 			POINT hPos;
 			int Col = 0xFF;
 			ExScreen::ScreenToAutomap(&hPos, ExAim::GetUnitX(pUnit), ExAim::GetUnitY(pUnit));
 
-			switch (pUnit->dwType)
-			{
-			case UNIT_PLAYER:
-			{
-			}
-			break;
-			case UNIT_MONSTER:
-			{
-				if (pUnit->dwMode == NPC_MODE_DEATH || pUnit->dwMode == NPC_MODE_DEAD)
+			switch (pUnit->dwType) {
+				case UNIT_MONSTER:{
+					if (pUnit->dwMode == NPC_MODE_DEATH || pUnit->dwMode == NPC_MODE_DEAD)
+						break;
+					if ((pUnit->dwClassId == 608) && (pUnit->dwMode == NPC_MODE_USESKILL1))
+						break;
+					if ((pUnit->dwClassId == 258 || (pUnit->dwClassId == 261)) && (pUnit->dwMode == NPC_MODE_SEQUENCE))
+						break;
+					if (!pUnit->pMonsterData->pMonStatsTxt->dwFlags.bKillable || pUnit->pMonsterData->pMonStatsTxt->dwFlags.bNPC
+						|| pUnit->pMonsterData->pMonStatsTxt->dwFlags.binTown)
+						break;
+						
+					if (pUnit->pMonsterData->pMonStatsTxt->dwFlags.bPrimeEvil)
+						ExAutomap::DrawBlob(hPos.x, hPos.y, D2Funcs.D2WIN_MixRGB(180, 0, 255));
+					else if (pUnit->pMonsterData->fSuperUniq || pUnit->pMonsterData->fChampion || pUnit->pMonsterData->fUnique)
+						ExAutomap::DrawBlob(hPos.x, hPos.y, D2Funcs.D2WIN_MixRGB(100, 0, 0));
+					else
+						ExAutomap::DrawBlob(hPos.x, hPos.y, D2Funcs.D2WIN_MixRGB(255, 50, 0));
 					break;
-				if ((pUnit->dwClassId == 608) && (pUnit->dwMode == NPC_MODE_USESKILL1))
-					break;
-				if ((pUnit->dwClassId == 258 || (pUnit->dwClassId == 261)) && (pUnit->dwMode == NPC_MODE_SEQUENCE))
-					break;
-				if (!pUnit->pMonsterData->pMonStatsTxt->dwFlags.bKillable || pUnit->pMonsterData->pMonStatsTxt->dwFlags.bNPC
-					|| pUnit->pMonsterData->pMonStatsTxt->dwFlags.binTown)
-					break;
-
-				if (pUnit->pMonsterData->pMonStatsTxt->dwFlags.bPrimeEvil)
-					ExAutomap::DrawBlob(hPos.x, hPos.y, D2Funcs.D2WIN_MixRGB(180, 0, 255));
-				else if (pUnit->pMonsterData->fSuperUniq || pUnit->pMonsterData->fChampion || pUnit->pMonsterData->fUnique)
-					ExAutomap::DrawBlob(hPos.x, hPos.y, D2Funcs.D2WIN_MixRGB(100, 0, 0));
-				else 
-				ExAutomap::DrawBlob(hPos.x, hPos.y, D2Funcs.D2WIN_MixRGB(255, 50, 0));
-			}
-			break;
-			case UNIT_ITEM:
-			{
-				switch (pUnit->pItemData->QualityNo)
-				{
-					case ITEM_SET:
-					{
-						ExAutomap::DrawCircle(hPos.x, hPos.y,2, D2Funcs.D2WIN_MixRGB(0, 130, 0));
-					}
-					break;
-					case ITEM_UNIQUE:
-					{
-						ExAutomap::DrawCircle(hPos.x, hPos.y, 2, D2Funcs.D2WIN_MixRGB(200, 150, 60));
-
+				}
+				case UNIT_ITEM:{
+					switch (pUnit->pItemData->QualityNo) {
+						case ITEM_SET:{
+							ExAutomap::DrawCircle(hPos.x, hPos.y, 2, D2Funcs.D2WIN_MixRGB(0, 130, 0));
+							break;
+						}
+						case ITEM_UNIQUE:{
+							ExAutomap::DrawCircle(hPos.x, hPos.y, 2, D2Funcs.D2WIN_MixRGB(200, 150, 60));
+							break;
+						}
 					}
 					break;
 				}
-			}
-			break;
-			case UNIT_MISSILE:
-			{
-				if (pUnit->dwOwnerId == Me->dwUnitId)
+				case UNIT_MISSILE:{
+					if (pUnit->dwOwnerId == Me->dwUnitId)
 					break;
-				if (pUnit->dwOwnerType == UNIT_PLAYER)
-				{
-					DWORD Flags = ExParty::GetPvpFlags(pUnit->dwOwnerId);
-					Col = Flags & PVP_ALLIED_WITH_YOU ? 0x87 : Flags & PVP_HOSTILED_YOU ? 0x5B : 0xFF;
+					if (pUnit->dwOwnerType == UNIT_PLAYER) {
+						DWORD Flags = ExParty::GetPvpFlags(pUnit->dwOwnerId);
+						Col = Flags & PVP_ALLIED_WITH_YOU ? 0x87 : Flags & PVP_HOSTILED_YOU ? 0x5B : 0xFF;
+					}
+					else if (pUnit->dwOwnerType == UNIT_MONSTER) {
+						Col = D2Funcs.D2WIN_MixRGB(255, 40, 0);
+					}
+					D2Funcs.D2GFX_DrawRectangle(hPos.x - 1, hPos.y - 1, hPos.x + 1, hPos.y + 1, Col, 5);
+					break;
 				}
-				else if (pUnit->dwOwnerType == UNIT_MONSTER)
-				{
-					Col = D2Funcs.D2WIN_MixRGB(255, 40, 0);
-				}
-				D2Funcs.D2GFX_DrawRectangle(hPos.x - 1, hPos.y - 1, hPos.x + 1, hPos.y + 1, Col, 5);
 			}
-				break;
-			}
-
 		}
-	}
 #endif
 
 #if defined D2EX_EXAIM_ENABLED || defined D2EX_PVM_BUILD
