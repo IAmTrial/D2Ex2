@@ -73,8 +73,6 @@ static HANDLE hEvent;
 static HANDLE hAimEvent;
 static unsigned Id;
 
-unsigned int ANNIHILUS_PATCH_D2_MPQ_CHECKSUM = 194557631;
-
 unsigned int checksum(string filename) {
 	FILE *p_file = NULL;
 	p_file = fopen(filename.c_str(), "rb");
@@ -215,7 +213,7 @@ BOOL D2Ex::Init()
 	//	printf("%s\n%d\n%d\n", spath.c_str(), sum, ANNIHILUS_PATCH_D2_MPQ_CHECKSUM);
 
 	DisableMultiRes = Misc::RegReadDword("SOFTWARE\\Blizzard Entertainment\\Diablo II", "DisableHighRes", 1);
-	if (/*DisableMultiRes ||*/ sum != ANNIHILUS_PATCH_D2_MPQ_CHECKSUM) {
+	if (/*DisableMultiRes ||*/ sum < 104857600) { //100mb
 		Misc::RegWriteDword("SOFTWARE\\Blizzard Entertainment\\Diablo II", "ExResolution", 2);
 		Misc::RegWriteDword("SOFTWARE\\Blizzard Entertainment\\Diablo II", "DisableHighRes", 1);
 		DisableMultiRes = true;
