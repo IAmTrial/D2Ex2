@@ -69,7 +69,7 @@
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\boost_1_55_0;$(ProjectDir)\glide3x;$(ProjectDir)\libpng;$(IncludePath)</IncludePath>
+    <IncludePath>C:\CPPlibs\boost\boost_1_57_0;$(ProjectDir)\glide3x;$(ProjectDir)\libpng;$(IncludePath)</IncludePath>
     <ReferencePath>$(ReferencePath)</ReferencePath>
     <LibraryPath>$(LibraryPath);$(ProjectDir)\glide3x</LibraryPath>
   </PropertyGroup>
@@ -85,7 +85,7 @@
     <OutDir>$(SolutionDir)files\1.13d\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\boost_1_55_0;$(ProjectDir)\glide3x;$(ProjectDir)\libpng;$(IncludePath)</IncludePath>
+    <IncludePath>C:\CPPlibs\boost\boost_1_57_0;$(ProjectDir)\glide3x;$(ProjectDir)\libpng;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath);$(ProjectDir)\glide3x</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release 1.11b|Win32'">
@@ -124,15 +124,15 @@
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <PostBuildEvent>
-      <Command>copy /y "$(TargetPath)" "D:\Gry\Diablo II\"</Command>
+      <Command>copy /y "$(SolutionDir)files\1.13d\D2Ex2.dll" "C:\Program Files (x86)\Diablo II - Annihilus\" &amp; START "" /D "C:\Program Files (x86)\Diablo II - Annihilus\D2PK" "C:\Program Files (x86)\Diablo II - Annihilus\Diablo II.exe" -w -nopickup</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>sed -i -r 's/^(.*) ([0-9]*)$/echo "\1" \%24((\2+1))/ge' $(MSBuildProjectDirectory)\Build.h
-tasklist | grep -q Game.exe &amp;&amp; taskkill /f /im Game.exe
-EXIT 0</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
     <PreBuildEvent>
-      <Message>Updating build number...</Message>
+      <Message>
+      </Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug 1.11b|Win32'">
@@ -203,6 +203,9 @@ EXIT 0</Command>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;comdlg32.lib;shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /y "$(SolutionDir)files\1.13d\D2Ex2.dll" "C:\Program Files (x86)\Diablo II - Annihilus\" &amp; START "" /D "C:\Program Files (x86)\Diablo II - Annihilus\D2PK" "C:\Program Files (x86)\Diablo II - Annihilus\Diablo II.exe" -w -nopickup</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release 1.11b|Win32'">
     <ClCompile>
@@ -248,7 +251,6 @@ EXIT 0</Command>
     <ClCompile Include="ExFontManager.cpp" />
     <ClCompile Include="ExGDI.cpp" />
     <ClCompile Include="ExMultiRes.cpp" />
-    <ClCompile Include="ExOpenGL.cpp" />
     <ClCompile Include="Offset.cpp" />
     <ClCompile Include="D2Ex2.cpp" />
     <ClCompile Include="ExBuffs.cpp" />
@@ -268,7 +270,6 @@ EXIT 0</Command>
     <ClCompile Include="ExSpectator.cpp" />
     <ClCompile Include="ExMPQ.cpp" />
     <ClCompile Include="Misc.cpp" />
-    <ClCompile Include="ExTexture.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug 1.13d|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug 1.11b|Win32'">Create</PrecompiledHeader>

@@ -451,6 +451,14 @@ namespace ExMultiRes
 				*D2Vars.D2CLIENT_UIPanelDrawYOffset = -(GFX_GetScreenHeight() / 2) + 213 + 48;
 			}	
 
+			if (BuffsEnabled)
+				ExBuffs::UpdateYPos();
+
+			if (bLagometer && lagometer != exnull_t) {
+				gExGUI->setX(lagometer, *D2Vars.D2GFX_GfxMode > 2 ? (*D2Vars.D2CLIENT_ScreenWidth / 2 - 127) : 273);
+				gExGUI->setY(lagometer, *D2Vars.D2CLIENT_ScreenHeight - 29);
+			}
+
 			return res;
 
 		}

@@ -195,9 +195,14 @@ BOOL D2Ex::Init()
 	FullScreen = atoi(Misc::RegReadString("SOFTWARE\\Blizzard Entertainment\\Diablo II", "FullScreen", "0").c_str());
 	HiddenCol = GetPrivateProfileInt("D2Ex", "HiddenColor", -1, ConfigIni.c_str());
 
+	char path[MAX_PATH];
+	GetCurrentDirectory(MAX_PATH, path);
+	string spath(path);
 	DisableMultiRes = Misc::RegReadDword("SOFTWARE\\Blizzard Entertainment\\Diablo II", "DisableHighRes", 1);
-	if (DisableMultiRes) {
+	if (DisableMultiRes || spath.find("D2PK") != string::npos) {
 		Misc::RegWriteDword("SOFTWARE\\Blizzard Entertainment\\Diablo II", "ExResolution", 2);
+		Misc::RegWriteDword("SOFTWARE\\Blizzard Entertainment\\Diablo II", "DisableHighRes", 1);
+		DisableMultiRes = true;
 	}
 	
 	*D2Vars.D2CLIENT_InGame = 0;//why is this necessary?

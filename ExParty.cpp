@@ -1121,38 +1121,17 @@ void ExParty::Fill(char *szSkip)
 		gExGUI->process();
 		int frameX = gExGUI->getX(Tbl.Frame);
 
-
-
-
-
-
-
-		Tbl.Name = gExGUI->add(new ExTextBox(frameX + 10, TextPos, (strcmp(ptRoster->szName, "token") == 0) ? 4 : 0, TextFont, ptRoster->szName, 0));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		Tbl.Class = gExGUI->add(new ExImage(frameX + 150, yPos, 5, ptRoster->dwClassId, "data\\D2Ex\\SmallClass"));
+		string acc = ExParty::FindAccount(ptRoster->szName);
+		if (!acc.empty() && acc != "N/A")
+			acc.insert(acc.begin(), '*');
+		
+		Tbl.Name = gExGUI->add(new ExTextBox(frameX + 10, TextPos, COL_WHITE, TextFont, ptRoster->szName, 0));
+		Tbl.Acc = gExGUI->add(new ExTextBox(frameX + 230, TextPos, COL_WHITE, TextFont, acc, 0));
+		Tbl.Clan = gExGUI->add(new ExTextBox(frameX + 195, TextPos, COL_GREY, TextFont, ExParty::FindClan(ptRoster->szName), 0));
+		Tbl.Class = gExGUI->add(new ExImage(frameX + 150, yPos, 5, ptRoster->dwClassId, "data\\D2Ex\\SmallClass"));		
 		gExGUI->setHooverText(Tbl.Class, ExParty::GetClassById(ptRoster->dwClassId));
 		Tbl.Level = gExGUI->add(new ExTextBox(frameX + 175, TextPos, 9, TextFont, boost::lexical_cast<wstring>(ptRoster->wLevel), 0));
-		Tbl.Clan = gExGUI->add(new ExTextBox(frameX + 195, TextPos, COL_GREY, TextFont, ExParty::FindClan(ptRoster->szName), 0));
-		string acc = ExParty::FindAccount(ptRoster->szName);
-		if(!acc.empty() && acc != "N/A")
-			acc.insert(acc.begin(), '*');
-		Tbl.Acc = gExGUI->add(new ExTextBox(frameX + 230, TextPos, 0, TextFont, acc, 0));
+
 #ifndef D2EX_PVPGN_EXT
 		Tbl.Location = gExGUI->add(new ExTextBox(frameX + 337, TextPos, COL_YELLOW, TextFont, GetLvlNameEx(ptRoster->dwUnitId == D2Funcs.D2CLIENT_GetPlayer()->dwUnitId ? ExParty::GetPlayerArea() : ptRoster->dwLevelId, 120), 0, 0));
 #else

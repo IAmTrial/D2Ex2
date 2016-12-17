@@ -124,26 +124,25 @@ void drawautomapcell(AutoMapCell * pCells, int nCell)
 /*
 	Function for drawing player units placed in room range // 0x730ED
 */
-void __stdcall ExAutomap::DrawRangePlayerUnit(UnitAny* pUnit, int nX, int nY, int nColor)
-{
+void __stdcall ExAutomap::DrawRangePlayerUnit(UnitAny* pUnit, int nX, int nY, int nColor) {
 
 	/*Room1* hRoom = D2Funcs.D2CLIENT_GetPlayer()->pPath->pRoom1;
 	int i = 0;
 	if (hRoom->dwRoomsNear > 0)
-		do {
-			int oldfont = D2Funcs.D2WIN_SetTextSize(6);
-			for (UnitAny* u = hRoom->pRoomsNear[i]->pUnitFirst; u; u = u->pListNext)
-			{
-				{
-					POINT p = { ExAim::GetUnitX(u), ExAim::GetUnitY(u) };
-					ExScreen::WorldToAutomap(&p);
-					ExScreen::DrawTextEx(p.x, p.y, COL_PURPLE, 0, DRAW_MODE_NORMAL, "%d", u->dwClassId);
-				}
-			}
-			D2Funcs.D2WIN_SetTextSize(oldfont);
-			++i;
-		} while (i < hRoom->dwRoomsNear);
-		drawautomapcell((*D2Vars.D2CLIENT_AutomapLayer)->pWalls, 472);*/
+	do {
+	int oldfont = D2Funcs.D2WIN_SetTextSize(6);
+	for (UnitAny* u = hRoom->pRoomsNear[i]->pUnitFirst; u; u = u->pListNext)
+	{
+	{
+	POINT p = { ExAim::GetUnitX(u), ExAim::GetUnitY(u) };
+	ExScreen::WorldToAutomap(&p);
+	ExScreen::DrawTextEx(p.x, p.y, COL_PURPLE, 0, DRAW_MODE_NORMAL, "%d", u->dwClassId);
+	}
+	}
+	D2Funcs.D2WIN_SetTextSize(oldfont);
+	++i;
+	} while (i < hRoom->dwRoomsNear);
+	drawautomapcell((*D2Vars.D2CLIENT_AutomapLayer)->pWalls, 472);*/
 
 #if _DEBUG
 	//Room1* hRoom = D2Funcs.D2CLIENT_GetPlayer()->pPath->pRoom1;
@@ -166,63 +165,35 @@ void __stdcall ExAutomap::DrawRangePlayerUnit(UnitAny* pUnit, int nX, int nY, in
 #endif
 
 #ifdef D2EX_SPECTATOR
-		if (D2Funcs.D2COMMON_GetUnitState(pUnit, D2EX_SPECTATOR_STATE))
-			return;
+	if (D2Funcs.D2COMMON_GetUnitState(pUnit, D2EX_SPECTATOR_STATE))
+		return;
 #endif
 
 	BYTE cGreen = D2Funcs.D2WIN_MixRGB(0, 255, 0);
 	bool bBushCollision = CheckAutomapCellCollision((*D2Vars.D2CLIENT_AutomapLayer)->pWalls, 472, nX, nY);
 
-	if (/*!bBushCollision*/ true || nColor == cGreen)
-	{
-		if (nColor == cGreen || *D2Vars.D2CLIENT_DrawAutomapParty)
+	if (/*!bBushCollision*/ true || nColor == cGreen) {
+		if (nColor == cGreen || *D2Vars.D2CLIENT_DrawAutomapParty) {
 			DrawBlob(nX, nY, nColor);
-		if (*D2Vars.D2CLIENT_DrawAutomapNames && *D2Vars.D2CLIENT_DrawAutomapParty && pUnit != D2Funcs.D2CLIENT_GetPlayer())
-		{
+		}
+		if (*D2Vars.D2CLIENT_DrawAutomapNames && *D2Vars.D2CLIENT_DrawAutomapParty && pUnit != D2Funcs.D2CLIENT_GetPlayer()) {
 			int nTextColor = nColor == cGreen ? COL_LIGHTGREEN : COL_RED;
-			if (pUnit->pPlayerData)
-			{
-				if (strcmp(pUnit->pPlayerData->szName, "token") == 0) {
-					static unsigned int color_count = 0;
-					static vector<string> cols = {
-						"ÿc1tÿc8oÿc9kÿc2eÿc3n\0",
-						"ÿc3tÿc1oÿc8kÿc9eÿc2n\0",
-						"ÿc2tÿc3oÿc1kÿc8eÿc9n\0",
-						"ÿc9tÿc2oÿc3kÿc1eÿc8n\0",
-						"ÿc8tÿc9oÿc2kÿc3eÿc1n\0"
-					};
-					
-					wchar_t wName[25];
-					char t[25];
+			if (pUnit->pPlayerData) {
+				wchar_t wName[16];
 
-					strcpy(t, cols[(int)((double)color_count / 25.0) % cols.size()].c_str());
-					Misc::CharToWide(t, 25, wName, 25);
+				Misc::CharToWide(pUnit->pPlayerData->szName, 16, wName, 16);
 
-					int oldfont = D2Funcs.D2WIN_SetTextSize(6);
-					int len = ExScreen::GetTextWidth(wName);
+				int oldfont = D2Funcs.D2WIN_SetTextSize(6);
+				int len = ExScreen::GetTextWidth(wName);
 
-					ExScreen::DrawTextEx(nX - (len / 2), nY - 10, nTextColor, 0, DRAW_MODE_NORMAL, L"%s", wName);
+				ExScreen::DrawTextEx(nX - (len / 2), nY - 10, nTextColor, 0, DRAW_MODE_NORMAL, L"%s", wName);
 
-					D2Funcs.D2WIN_SetTextSize(oldfont);
-
-				//	color_count++;
-				}
-				else {
-					wchar_t wName[16];
-
-					Misc::CharToWide(pUnit->pPlayerData->szName, 16, wName, 16);
-
-					int oldfont = D2Funcs.D2WIN_SetTextSize(6);
-					int len = ExScreen::GetTextWidth(wName);
-
-					ExScreen::DrawTextEx(nX - (len / 2), nY - 10, nTextColor, 0, DRAW_MODE_NORMAL, L"%s", wName);
-
-					D2Funcs.D2WIN_SetTextSize(oldfont);
-				}
+				D2Funcs.D2WIN_SetTextSize(oldfont);
 			}
 		}
 	}
 }
+
 
 Level* ExAutomap::GetLevelPointer(ActMisc *pActMisc, int nLevel)
 {

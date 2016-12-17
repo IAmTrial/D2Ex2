@@ -164,12 +164,6 @@
     <ClCompile Include="ExAim.cpp">
       <Filter>Source Files\Main</Filter>
     </ClCompile>
-    <ClCompile Include="ExOpenGL.cpp">
-      <Filter>Source Files\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="ExTexture.cpp">
-      <Filter>Source Files\OpenGL</Filter>
-    </ClCompile>
     <ClCompile Include="xxhash\xxhash.c">
       <Filter>Source Files\Misc</Filter>
     </ClCompile>
