@@ -73,6 +73,17 @@ static HANDLE hEvent;
 static HANDLE hAimEvent;
 static unsigned Id;
 
+unsigned int ANNIHILUS_PATCH_D2_MPQ_CHECKSUM = 194557631;
+
+unsigned int checksum(string filename) {
+	FILE *p_file = NULL;
+	p_file = fopen(filename.c_str(), "rb");
+	fseek(p_file, 0, SEEK_END);
+	int size = ftell(p_file);
+	fclose(p_file);
+	return size;
+}
+
 void LoadItemConfig()
 {
 	char szConfig[200];
@@ -198,11 +209,17 @@ BOOL D2Ex::Init()
 	char path[MAX_PATH];
 	GetCurrentDirectory(MAX_PATH, path);
 	string spath(path);
+	spath += "\\patch_d2.mpq";
+
+	unsigned int sum = checksum(spath);
+	//	printf("%s\n%d\n%d\n", spath.c_str(), sum, ANNIHILUS_PATCH_D2_MPQ_CHECKSUM);
+
 	DisableMultiRes = Misc::RegReadDword("SOFTWARE\\Blizzard Entertainment\\Diablo II", "DisableHighRes", 1);
-	if (DisableMultiRes || spath.find("D2PK") != string::npos) {
+	if (/*DisableMultiRes ||*/ sum != ANNIHILUS_PATCH_D2_MPQ_CHECKSUM) {
 		Misc::RegWriteDword("SOFTWARE\\Blizzard Entertainment\\Diablo II", "ExResolution", 2);
 		Misc::RegWriteDword("SOFTWARE\\Blizzard Entertainment\\Diablo II", "DisableHighRes", 1);
 		DisableMultiRes = true;
+		//	printf("diabled");
 	}
 	
 	*D2Vars.D2CLIENT_InGame = 0;//why is this necessary?
