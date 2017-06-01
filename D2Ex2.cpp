@@ -32,6 +32,8 @@
 #define __DEFINE_EXPTRS
 #ifdef VER_113D
 #include "D2ExPointers_113D.h"
+#elif VER_113C
+#include "D2ExPointers_113C.h"
 #else
 #include "D2ExPointers_111B.h"
 #endif

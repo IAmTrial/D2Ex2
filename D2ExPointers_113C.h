@@ -45,27 +45,36 @@ struct _d2f {
 _d2f D2Funcs = {0}; void SetupD2Funcs() {
 #endif
 
-	EXFUNCPTR(D2CLIENT, PrintGameString, void, __stdcall, (const wchar_t* wMessage, int nColor), 0x75EB0) // ns
-		EXFUNCPTR(D2CLIENT, PrintPartyString, void, __stdcall, (const wchar_t* wMessage, int nColor), 0x75C70) //ns
-		EXFUNCPTR(D2CLIENT, GetPlayer, UnitAny*, __stdcall, (void), 0x613C0) //ns
-		EXFUNCPTR(D2CLIENT, GetSelectedUnit, UnitAny*, __stdcall, (void), 0x17280) //k
-		EXFUNCPTR(D2CLIENT, GetUnitById, UnitAny*, __fastcall, (DWORD UnitID, DWORD UnitType), 0x620D0) //k
+	EXFUNCPTR(D2CLIENT, PrintGameString, void, __stdcall, (const wchar_t* wMessage, int nColor), 0x7D850) // ns
+		EXFUNCPTR(D2CLIENT, PrintPartyString, void, __stdcall, (const wchar_t* wMessage, int nColor), 0x7D610) //ns
+		EXFUNCPTR(D2CLIENT, GetPlayer, UnitAny*, __stdcall, (void), 0xA4D60) //ns
+		EXFUNCPTR(D2CLIENT, GetSelectedUnit, UnitAny*, __stdcall, (void), 0x51A80) //k
+		EXFUNCPTR(D2CLIENT, GetUnitById, UnitAny*, __fastcall, (DWORD UnitID, DWORD UnitType), 0xA5B40) //k
+		//todo:
 		EXFUNCPTR(D2CLIENT, ClearScreen, int, __stdcall, (void), 0x3E630) //k
-		EXFUNCPTR(D2CLIENT, ClearScreen2, void, __stdcall, (void), 0x44980) //k 
+		//endtodo
+		EXFUNCPTR(D2CLIENT, ClearScreen2, void, __stdcall, (void), 0x43870) //k 
+		//todo:
 		EXFUNCPTR(D2CLIENT, ClearScreen3, BOOL, __stdcall, (BOOL bUnk, BOOL bClearScreen), 0x18500)
+		//endtodo
 
-		EXFUNCPTR(D2CLIENT, SetUiVar, int, __fastcall, (int UIMode, BOOL HowSet, int bClearScreen), 0x1C190)
+		EXFUNCPTR(D2CLIENT, SetUiVar, int, __fastcall, (int UIMode, BOOL HowSet, int bClearScreen), 0xC2790)
 
+		//todo:
 		EXFUNCPTR(D2CLIENT, CreateSpell, UnitAny*, __fastcall, (DWORD nType, UnitAny *pUnit, SpellStrc *pSpellData, BOOL bOverrideStun), 0x49A90)
+		//endtodo
 
-		EXFUNCPTR(D2CLIENT, RevealAutomapRoom, void, __stdcall, (Room1* pRoom1, DWORD dwClipFlag, AutoMapLayer* aLayer), 0x73160) //ns
-		EXFUNCPTR(D2CLIENT, NewAutomapCell, AutoMapCell*, __fastcall, (void), 0x703C0) // ns
-		EXFUNCPTR(D2CLIENT, AddAutomapCell, void, __fastcall, (AutoMapCell* aCell, AutoMapCell** node), 0x71EA0) //ns
+		EXFUNCPTR(D2CLIENT, RevealAutomapRoom, void, __stdcall, (Room1* pRoom1, DWORD dwClipFlag, AutoMapLayer* aLayer), 0x62580) //ns
+		EXFUNCPTR(D2CLIENT, NewAutomapCell, AutoMapCell*, __fastcall, (void), 0x5F6B0) // ns
+		EXFUNCPTR(D2CLIENT, AddAutomapCell, void, __fastcall, (AutoMapCell* aCell, AutoMapCell** node), 0x61320) //ns
 
+		//todo:
 		EXFUNCPTR(D2CLIENT, D2MenuChange, int, __fastcall, (int MouseX, int aNull, int MouseY), 0xC3190) //k
 		EXFUNCPTR(D2CLIENT, D2DrawBar, void, __fastcall, (int MenuPosY, int aNull, D2MenuEntry *Entry, int nTransLvl, bool isCellFile), 0xC1740) //k
+		//endtodo
 
-		EXFUNCPTR(D2CLIENT, GetCursorItem, UnitAny*, __fastcall, (void), 0x144A0) //ns
+		EXFUNCPTR(D2CLIENT, GetCursorItem, UnitAny*, __fastcall, (void), 0x16020) //ns
+		//todo
 		EXFUNCPTR(D2CLIENT, GetItemEleDmg, BOOL, __stdcall, (UnitAny *ptUnit, int *MinDmg, int *MaxDmg, int *aCol, Skill *ptSkill), 0x35E10) //k
 
 		EXFUNCPTR(D2CLIENT, UpdateAutoMap, void, __fastcall, (BOOL bUpdate), 0x71FC0)
@@ -74,13 +83,17 @@ _d2f D2Funcs = {0}; void SetupD2Funcs() {
 		EXFUNCPTR(D2CLIENT, CalcShake, void, __stdcall, (int* xShake, int* yShake), 0xB5EE0)
 		EXFUNCPTR(D2CLIENT, DrawMercName, void, __stdcall, (UnitAny* pMerc), 0x941B0)
 		EXFUNCPTR(D2CLIENT, DrawQuestPanel, void, __stdcall, (), 0x8D810) // do not use accidentally!
+		//endtodo
 		
 		
 
 		//D2COMMON
 		//Skill Funcs
+		//todo
 		EXFUNCPTR(D2COMMON, GetSkillById, Skill*, __fastcall, (UnitAny *ptUnit, int SkillId, int SkillFlags), -10984) //k
-		EXFUNCPTR(D2COMMON, GetSkillLevel, int, __stdcall, (UnitAny* ptUnit, Skill* ptSkill, int aType), -10007) //k
+		//endtodo
+		EXFUNCPTR(D2COMMON, GetSkillLevel, int, __stdcall, (UnitAny* ptUnit, Skill* ptSkill, int aType), -10306) //k
+		//todo
 		EXFUNCPTR(D2COMMON, GetSkillType, int, __stdcall, (UnitAny* ptUnit, Skill* ptSkill), -10274) //k
 		EXFUNCPTR(D2COMMON, GetSkillId, int, __stdcall, (Skill* ptSkill, char* szFile, int aLine), -11151) //k
 
@@ -99,16 +112,20 @@ _d2f D2Funcs = {0}; void SetupD2Funcs() {
 		EXFUNCPTR(D2COMMON, GetLevelNoByRoom, int, __stdcall, (Room1* ptRoom), -10691) // k
 		EXFUNCPTR(D2COMMON, GetActNoByLevelNo, int, __stdcall, (int dwLevelNo), -10864) //k
 		EXFUNCPTR(D2COMMON, GetTownLevel, int, __stdcall, (int dwActNo), -10353) //k
-		EXFUNCPTR(D2COMMON, AddRoomData, void, __stdcall, (Act* ptAct, int LevelId, int Xpos, int Ypos, Room1*  pRoom), -10890) //k
-		EXFUNCPTR(D2COMMON, RemoveRoomData, void, __stdcall, (Act* ptAct, int LevelId, int Xpos, int Ypos, Room1*  pRoom), -10208) //k
-		EXFUNCPTR(D2COMMON, GetLevel, Level*, __fastcall, (ActMisc* pMisc, int dwLevelNo), -10283) //k
-		EXFUNCPTR(D2COMMON, GetLayer, AutoMapLayer2*, __fastcall, (DWORD dwLevelNo), -10087) //k
-		EXFUNCPTR(D2COMMON, GetObjectTxt, ObjectTxt*, __stdcall, (DWORD objno), -10319) //k
+		//endtodo
+		EXFUNCPTR(D2COMMON, AddRoomData, void, __stdcall, (Act* ptAct, int LevelId, int Xpos, int Ypos, Room1*  pRoom), -10401) //k
+		EXFUNCPTR(D2COMMON, RemoveRoomData, void, __stdcall, (Act* ptAct, int LevelId, int Xpos, int Ypos, Room1*  pRoom), -11099) //k
+		EXFUNCPTR(D2COMMON, GetLevel, Level*, __fastcall, (ActMisc* pMisc, int dwLevelNo), -10207) //k
+		EXFUNCPTR(D2COMMON, GetLayer, AutoMapLayer2*, __fastcall, (DWORD dwLevelNo), -10749) //k
+		EXFUNCPTR(D2COMMON, GetObjectTxt, ObjectTxt*, __stdcall, (DWORD objno), 0x3E980) //k
+		//todo
 		EXFUNCPTR(D2COMMON, GetRoomXYByLevel, Room1*, __stdcall, (Act* ptAct, int LevelNo, int Unk0, int* xPos, int* yPos, int UnitAlign), -10632) //k // Player Align =  2
 		EXFUNCPTR(D2COMMON, GetRoomByXY, Room1*, __stdcall, (Act* ptAct, int nX, int nY), -11056) // k
 		EXFUNCPTR(D2COMMON, CheckXYType, BOOL, __stdcall, (UnitAny *pUnit, int pX, int pY, int Type), -10841)
-		EXFUNCPTR(D2COMMON, MapToAbsScreen, void, __stdcall, (long *pX, long *pY), -10582) //k
-		EXFUNCPTR(D2COMMON, AbsScreenToMap, void, __stdcall, (long *mX, long *mY), -10720) //k
+		//endtodo
+		EXFUNCPTR(D2COMMON, MapToAbsScreen, void, __stdcall, (long *pX, long *pY), -11087) //k
+		EXFUNCPTR(D2COMMON, AbsScreenToMap, void, __stdcall, (long *mX, long *mY), -10474) //k
+		//todo:
 		EXFUNCPTR(D2COMMON, GetUnitXOffset, int, __stdcall, (UnitAny* pUnit), -10641) //k
 		EXFUNCPTR(D2COMMON, GetUnitYOffset, int, __stdcall, (UnitAny* pUnit), -10057) //k
 
@@ -134,23 +151,30 @@ _d2f D2Funcs = {0}; void SetupD2Funcs() {
 		EXFUNCPTR(D2COMMON, GetItemByBodyLoc, UnitAny*, __stdcall, (Inventory * pInventory, int aLoc), -10292) //k
 		EXFUNCPTR(D2COMMON, GetItemFlag, BOOL, __stdcall, (UnitAny *item, DWORD flagmask, DWORD lineno, char *filename), -10458) //k
 		EXFUNCPTR(D2COMMON, GetItemColor, BYTE*, __stdcall, (UnitAny *ptPlayer, UnitAny* ptItem, BYTE* out, BOOL a4), -11062) //k
-		EXFUNCPTR(D2COMMON, GetItemCost, int, __stdcall, (UnitAny *pPlayer, UnitAny *ptItem, int DiffLvl, QuestFlags *pQuestFlags, int NpcClassId, int InvPage), -10186)
+		//endtodo
+		EXFUNCPTR(D2COMMON, GetItemCost, int, __stdcall, (UnitAny *pPlayer, UnitAny *ptItem, int DiffLvl, QuestFlags *pQuestFlags, int NpcClassId, int InvPage), -10107)
+		//todo
 		EXFUNCPTR(D2COMMON, GetItemType, int, __stdcall, (UnitAny *pItem), -10121)
 		EXFUNCPTR(D2COMMON, IsMatchingType, BOOL, __stdcall, (UnitAny *pItem, int iType), -10601)
+		//endtodo
 
 		//D2NET
-		EXFUNCPTR(D2NET, SendPacket, bool, __stdcall, (int PacketLen, int _1, BYTE *aPacket), -10015) // k
-		EXFUNCPTR(D2NET, ReceivePacket, void, __fastcall, (int *eLen, BYTE* aPacket, int aLen), 0x7450) //k
+		EXFUNCPTR(D2NET, SendPacket, bool, __stdcall, (int PacketLen, int _1, BYTE *aPacket), -10024) // k
+		// maybe?
+		EXFUNCPTR(D2NET, ReceivePacket, void, __fastcall, (int *eLen, BYTE* aPacket, int aLen), 0x63C0) //k
 
 		//BNCLIENT
+		//todo
 		EXFUNCPTR(BNCLIENT, SendBNMessage, void, __fastcall, (const char* szMsg), 0x13050) // ns
+		//endtodo
 
 		//D2GFX 
-		EXFUNCPTR(D2GFX, DrawRectangle, void, __stdcall, (int X1, int Y1, int X2, int Y2, int dwColor, int dwTrans), -10028) // k
-		EXFUNCPTR(D2GFX, DrawLine, void, __stdcall, (int X1, int Y1, int X2, int Y2, BYTE Col, BYTE Alpha), -10013) //k
+		EXFUNCPTR(D2GFX, DrawRectangle, void, __stdcall, (int X1, int Y1, int X2, int Y2, int dwColor, int dwTrans), -10014) // k
+		EXFUNCPTR(D2GFX, DrawLine, void, __stdcall, (int X1, int Y1, int X2, int Y2, BYTE Col, BYTE Alpha), -10010) //k
 
-		EXFUNCPTR(D2GFX, GetHwnd, HWND, __stdcall, (void), -10007) // k
-		EXFUNCPTR(D2GFX, DrawCellContext, void, __stdcall, (CellContext *context, int Xpos, int Ypos, int dwl, int nTransLvl, BYTE *Pal255), -10042) // k
+		EXFUNCPTR(D2GFX, GetHwnd, HWND, __stdcall, (void), -10048) // k
+		EXFUNCPTR(D2GFX, DrawCellContext, void, __stdcall, (CellContext *context, int Xpos, int Ypos, int dwl, int nTransLvl, BYTE *Pal255), -10041) // k
+		//todo
 		EXFUNCPTR(D2GFX, DrawCellContextEx, void, __stdcall, (CellContext *context, int Xpos, int Ypos, int dwl, int nTransLvl, BYTE Color), -10067) //k
 		EXFUNCPTR(D2GFX, GetResolutionMode, int, __stdcall, (), -10012)
 		EXFUNCPTR(D2GFX, SetResolutionMode, BOOL, __stdcall, (int nMode, BOOL bUpdate), -10069)
@@ -168,16 +192,20 @@ _d2f D2Funcs = {0}; void SetupD2Funcs() {
 		EXFUNCPTR(D2WIN, ResizeWindow, BOOL, __stdcall, (int nMode), -10037)
 		EXFUNCPTR(D2WIN, LoadCellFile, CellFile*, __fastcall, (const char* szFile, int Type), -10023) //k
 		EXFUNCPTR(D2WIN, DrawCellFile, void, __fastcall, (CellFile * pCellFile, int xPos, int yPos, int div, int trans, int Color), -10172) //k
+		//endtodo
 		//Text---
-		EXFUNCPTR(D2WIN, DrawText, void, __fastcall, (const wchar_t * wStr, int X, int Y, int nColor, int Centered), -10076) //k
+		EXFUNCPTR(D2WIN, DrawText, void, __fastcall, (const wchar_t * wStr, int X, int Y, int nColor, int Centered), -10150) //k
+		//todo
 		EXFUNCPTR(D2WIN, DrawTextEx, void, __fastcall, (const wchar_t * wStr, int X, int Y, int nColor, int Centered, int TransLvl), -10084) //k
 		EXFUNCPTR(D2WIN, DrawFramedText, void, __fastcall, (const wchar_t * wStr, int X, int Y, int nColor, int Centered), -10137) //k
 		EXFUNCPTR(D2WIN, DrawRectangledText, void, __fastcall, (const wchar_t * wStr, int X, int Y, int nRectColor, int nRectTrans, int nColor), -10078)
 		EXFUNCPTR(D2WIN, GetFontHeight, short, __fastcall, (void), -10088) //k
 		EXFUNCPTR(D2WIN, GetTextWidth, int, __fastcall, (const wchar_t * wStr), -10150) // k
 		EXFUNCPTR(D2WIN, GetTextNWidth, int, __fastcall, (const wchar_t * wStr, const int nChars), -10148) // k
-		EXFUNCPTR(D2WIN, SetTextSize, int, __fastcall, (int dwSize), -10047) //k
+		//endtodo
+		EXFUNCPTR(D2WIN, SetTextSize, int, __fastcall, (int dwSize), -10184) //k
 		//Controls--
+		//todo
 		EXFUNCPTR(D2WIN, Fadeout, void, __stdcall, (Control* pControl, int HowSet), -10000)
 		EXFUNCPTR(D2WIN, SetControlFadeout, void, __stdcall, (Control* pControl, int HowSet), -10070) //k
 		EXFUNCPTR(D2WIN, DeleteControl, BOOL, __stdcall, (Control** pControl), -10123) //k
@@ -193,7 +221,9 @@ _d2f D2Funcs = {0}; void SetupD2Funcs() {
 		EXFUNCPTR(D2WIN, MixRGB, BYTE, __stdcall, (BYTE Red, BYTE Green, BYTE Blue), -10069) //k
 
 		//D2CMP
-		EXFUNCPTR(D2CMP, DeleteCellFile, void, __stdcall, (CellFile* cf), -10020) //k
+		//endtodo
+		EXFUNCPTR(D2CMP, DeleteCellFile, void, __stdcall, (CellFile* cf), -10106) //k
+		//todo
 		EXFUNCPTR(D2CMP, MixPalette, BYTE*, __stdcall, (int TransLvl, int ColorNo), -10009) //k
 		EXFUNCPTR(D2CMP, SetupGfxCell, BOOL, __stdcall, (CellContext *cc, int aZero, int aOne), -10025)
 		EXFUNCPTR(D2CMP, SetupGfxTile, BOOL, __stdcall, (TileContext *tc, int aZero, int aOne), -10084)
@@ -252,6 +282,7 @@ _d2f D2Funcs = {0}; void SetupD2Funcs() {
 		EXFUNCPTR(D2LANG, GetLocaleText, wchar_t*, __fastcall, (short nLocaleTxtNo), -10004) //k
 		EXFUNCPTR(D2LANG, GetLocaleFolder, void, __stdcall, (char* out, int aZero), -10008)
 		EXFUNCPTR(D2LANG, LoadStrings, BOOL, __fastcall, (int _1, const char* szLang, BOOL bExpansion), -10009) // _1 seems unused
+		//endtodo
 
 #ifndef __DEFINE_EXPTRS
 };
@@ -263,9 +294,10 @@ _d2p D2Ptrs = { 0 };
 void SetupD2Pointers() {
 #endif
 
-	EXASMPTR(D2CLIENT, InitAutomapLayer_I, 0x733D0)
+	EXASMPTR(D2CLIENT, InitAutomapLayer_I, 0x62710)
 
-	EXASMPTR(D2NET, ReceivePacket_I, -10001) // k [isPacketCorrect]
+	EXASMPTR(D2NET, ReceivePacket_I, -10033) // k [isPacketCorrect]
+	//todo
 	EXASMPTR(D2GAME, FindFreeCoords_I, 0xE0000)
 	EXASMPTR(D2GAME, CheckXYOccupy_I, 0x1340)
 	EXASMPTR(D2CLIENT, PlaySoundNo_I, 0x26270) // k

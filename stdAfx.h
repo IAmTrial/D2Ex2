@@ -68,7 +68,7 @@
 #define D2EX_TP_RANGE	32							// Maximum teleport range
 //*******************************************
 
-#if defined VER_111B && defined VER_113D
+#if VER_111B + VER_113D + VER_113C > 1
 #error "Only one version can be defined at once!"
 #endif
 
@@ -87,6 +87,9 @@ using namespace std;
 #elif defined VER_111B
 #include "D2Structs_111B.h"
 #include "D2ExPointers_111B.h"
+#elif defined VER_113C
+#include "D2Structs_113D.h"
+#include "D2ExPointers_113C.h"
 #endif
 
 #include "BlizzardSmartPointer.h"
