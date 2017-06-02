@@ -174,9 +174,9 @@ _d2f D2Funcs = {0}; void SetupD2Funcs() {
 
 		EXFUNCPTR(D2GFX, GetHwnd, HWND, __stdcall, (void), -10048) // k
 		EXFUNCPTR(D2GFX, DrawCellContext, void, __stdcall, (CellContext *context, int Xpos, int Ypos, int dwl, int nTransLvl, BYTE *Pal255), -10041) // k
+		EXFUNCPTR(D2GFX, DrawCellContextEx, void, __stdcall, (CellContext *context, int Xpos, int Ypos, int dwl, int nTransLvl, BYTE Color), -10019) //k
+		EXFUNCPTR(D2GFX, GetResolutionMode, int, __stdcall, (), -10031)
 		//todo
-		EXFUNCPTR(D2GFX, DrawCellContextEx, void, __stdcall, (CellContext *context, int Xpos, int Ypos, int dwl, int nTransLvl, BYTE Color), -10067) //k
-		EXFUNCPTR(D2GFX, GetResolutionMode, int, __stdcall, (), -10012)
 		EXFUNCPTR(D2GFX, SetResolutionMode, BOOL, __stdcall, (int nMode, BOOL bUpdate), -10069)
 		EXFUNCPTR(D2GFX, SetScreenShift, void, __fastcall, (int nShift), -10047)
 		EXFUNCPTR(D2GFX, InitGouraudCache, void, __stdcall, (), 0x9750)

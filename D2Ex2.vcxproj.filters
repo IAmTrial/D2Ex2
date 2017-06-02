@@ -48,6 +48,9 @@
     <Filter Include="Header Files\OpenGL">
       <UniqueIdentifier>{af22b029-3f76-4af2-910f-5e14ab5f295a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\D2 Internals\1.13c">
+      <UniqueIdentifier>{ccb0e250-8256-418e-875b-e0aeae0d3d97}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D2Stubs.cpp">
@@ -381,6 +384,9 @@
     </ClInclude>
     <ClInclude Include="ExGDI.h">
       <Filter>Header Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="D2ExPointers_113C.h">
+      <Filter>Header Files\D2 Internals\1.13c</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
